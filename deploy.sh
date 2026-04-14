@@ -98,7 +98,42 @@ ok "Service Spring Boot lancé"
 # ── 7. Nginx reverse proxy ────────────────────────────────────────────────────
 log "Configuration Nginx..."
 $SSH $SERVER bash <<REMOTE
-cat > /etc/nginx/sites-available/$APP_NAME <<'EOF'
+SSL_CERT="/etc/letsencrypt/live/$DOMAIN/fullchain.pem"
+
+if [ -f "\$SSL_CERT" ]; then
+  # SSL dispo — config HTTPS complète
+  cat > /etc/nginx/sites-available/$APP_NAME <<'EOF'
+server {
+    listen 80;
+    server_name $DOMAIN www.$DOMAIN;
+    return 301 https://\$host\$request_uri;
+}
+
+server {
+    listen 443 ssl;
+    server_name $DOMAIN www.$DOMAIN;
+
+    ssl_certificate /etc/letsencrypt/live/$DOMAIN/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/$DOMAIN/privkey.pem;
+    include /etc/letsencrypt/options-ssl-nginx.conf;
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
+
+    gzip on;
+    gzip_types text/plain text/css application/json application/javascript text/xml application/xml;
+
+    location / {
+        proxy_pass http://127.0.0.1:8080;
+        proxy_set_header Host \$host;
+        proxy_set_header X-Real-IP \$remote_addr;
+        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto \$scheme;
+        proxy_read_timeout 60s;
+    }
+}
+EOF
+else
+  # Pas encore de SSL — config HTTP simple
+  cat > /etc/nginx/sites-available/$APP_NAME <<'EOF'
 server {
     listen 80;
     server_name $DOMAIN www.$DOMAIN _;
@@ -116,10 +151,10 @@ server {
     }
 }
 EOF
+fi
 
 ln -sf /etc/nginx/sites-available/$APP_NAME /etc/nginx/sites-enabled/$APP_NAME
 rm -f /etc/nginx/sites-enabled/default
-
 nginx -t && systemctl reload nginx && echo "NGINX_OK"
 REMOTE
 ok "Nginx configuré"

@@ -1,262 +1,197 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import { cn } from '@/lib/utils'
 import {
-  GitFork,
-  Mail,
-  ExternalLink,
-  Terminal,
-  Code2,
   ArrowRight,
+  Mail,
+  Phone,
+  ExternalLink,
   Globe,
+  ShoppingBag,
+  Code2,
+  Zap,
+  Shield,
+  HeadphonesIcon,
+  ChevronRight,
 } from 'lucide-react'
 
-// ── Types ────────────────────────────────────────────────────────────────────
+// ── Data ──────────────────────────────────────────────────────────────────────
 
-interface Project {
-  tag: string
-  title: string
-  desc: string
-  tech: string[]
-  color: string
-  icon: React.ReactNode
-}
+const NAV_LINKS = [
+  { label: 'À propos', href: '#about' },
+  { label: 'Réalisations', href: '#projects' },
+  { label: 'Services', href: '#services' },
+  { label: 'Contact', href: '#contact' },
+]
 
-interface Stat {
-  label: string
-  value: string
-}
-
-// ── Data ─────────────────────────────────────────────────────────────────────
-
-const PROJECTS: Project[] = [
+const PROJECTS = [
   {
-    tag: 'APPLICATION WEB',
+    tag: 'Application Web',
     title: 'SEMASC',
     desc: 'Création de ressources pédagogiques pour renforcer les capacités des clubs sportifs amateurs en lien avec les initiatives européennes.',
-    tech: ['React', 'Spring Boot', 'PostgreSQL', 'Docker'],
-    color: '#00e5ff',
-    icon: <Globe size={20} />,
+    tech: ['React', 'Spring Boot', 'PostgreSQL'],
+    icon: <Globe size={18} />,
+    color: '#818cf8',
   },
   {
-    tag: 'E-COMMERCE',
+    tag: 'E-commerce',
     title: 'Emmael Céramique',
-    desc: 'Site e-commerce dédié à la céramique artisanale. Design élégant, expérience d\'achat fluide, gestion de catalogue.',
-    tech: ['React', 'TypeScript', 'Tailwind', 'Spring Boot'],
-    color: '#ff006e',
-    icon: <Code2 size={20} />,
+    desc: 'Site e-commerce dédié à la céramique artisanale. Design élégant, expérience d\'achat fluide, gestion de catalogue complète.',
+    tech: ['React', 'TypeScript', 'Tailwind'],
+    icon: <ShoppingBag size={18} />,
+    color: '#a78bfa',
   },
   {
-    tag: 'SIDE PROJECT',
+    tag: 'Site Vitrine',
     title: 'Weirding Code',
-    desc: 'Ce site. Fait avec passion, Spring Boot, React, shadcn et beaucoup de café. Le craft dans sa forme la plus pure.',
-    tech: ['React', 'shadcn', 'Java 21', 'Maven'],
-    color: '#f5ff00',
-    icon: <Terminal size={20} />,
+    desc: 'Portfolio et site vitrine personnel. Stack moderne, déploiement automatisé, HTTPS. Conçu et déployé from scratch.',
+    tech: ['React', 'Spring Boot', 'Java 21'],
+    icon: <Code2 size={18} />,
+    color: '#60a5fa',
   },
 ]
 
-const STATS: Stat[] = [
-  { label: 'Projets', value: '10+' },
-  { label: 'Cafés', value: '∞' },
-  { label: 'Années d\'XP', value: '5+' },
+const SERVICES = [
+  {
+    icon: <Globe size={22} />,
+    title: 'Site Web Vitrine',
+    desc: 'Une présence en ligne élégante et efficace. Designs épurés, responsive, avec optimisation SEO de base.',
+  },
+  {
+    icon: <Zap size={22} />,
+    title: 'Solution Web Complète',
+    desc: 'De la conception des maquettes à l\'hébergement. Développement sur mesure, base de données, maintenance.',
+  },
+  {
+    icon: <Code2 size={22} />,
+    title: 'Développement Sur-Mesure',
+    desc: 'Applications web adaptées à vos besoins spécifiques — du front-end au back-end, de A à Z.',
+  },
+  {
+    icon: <Shield size={22} />,
+    title: 'Sécurité & Conformité',
+    desc: 'Meilleures pratiques de sécurité, conformité RGPD, et maintien des performances sur le long terme.',
+  },
+  {
+    icon: <Zap size={22} />,
+    title: 'Optimisation',
+    desc: 'Amélioration de la vitesse, de l\'expérience utilisateur et de la scalabilité de vos applications.',
+  },
+  {
+    icon: <HeadphonesIcon size={22} />,
+    title: 'Accompagnement Technique',
+    desc: 'Conseil, audit et suivi technique pour garantir la réussite de vos projets numériques.',
+  },
 ]
 
-const TECH_TAGS = ['Spring Boot', 'React', 'TypeScript', 'PostgreSQL', 'Docker', 'Java', 'Tailwind', 'WordPress']
+const TECH_TAGS = ['Spring Boot', 'React', 'TypeScript', 'PostgreSQL', 'Docker', 'Java', 'Tailwind CSS', 'WordPress', 'SEO', 'REST API']
 
-const MARQUEE_TEXT = 'SPRING BOOT · REACT · TYPESCRIPT · POSTGRESQL · SHADCN · JAVA · DOCKER · WORDPRESS · SEO · '
+const MARQUEE_TEXT = 'SPRING BOOT · REACT · TYPESCRIPT · POSTGRESQL · JAVA · DOCKER · WORDPRESS · REST API · TAILWIND · '
 
-
-// ── Helpers ───────────────────────────────────────────────────────────────────
-
-function GridBackground() {
-  return (
-    <div
-      className="absolute inset-0 opacity-[0.025] pointer-events-none"
-      style={{
-        backgroundImage:
-          'linear-gradient(#00e5ff 1px, transparent 1px), linear-gradient(90deg, #00e5ff 1px, transparent 1px)',
-        backgroundSize: '64px 64px',
-      }}
-    />
-  )
-}
-
-function SectionLabel({ index, children }: { index: string; children: React.ReactNode }) {
-  return (
-    <div className="font-code text-xs mb-5 tracking-widest flex items-center gap-3" style={{ color: '#00e5ff' }}>
-      <span className="w-8 h-px" style={{ background: '#00e5ff' }} />
-      {index} / {children}
-    </div>
-  )
-}
-
-// ── Main Component ────────────────────────────────────────────────────────────
+// ── Component ─────────────────────────────────────────────────────────────────
 
 export default function App() {
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 })
   const [scrollY, setScrollY] = useState(0)
-  const heroRef = useRef<HTMLElement>(null)
+  const [form, setForm] = useState({ company: '', email: '', message: '' })
 
   useEffect(() => {
-    const onMove = (e: MouseEvent) => setMousePos({ x: e.clientX, y: e.clientY })
     const onScroll = () => setScrollY(window.scrollY)
-    window.addEventListener('mousemove', onMove)
     window.addEventListener('scroll', onScroll, { passive: true })
-    return () => {
-      window.removeEventListener('mousemove', onMove)
-      window.removeEventListener('scroll', onScroll)
-    }
+    return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
-  // suppress unused warning — cn is available via import for future use
-  void cn
+  const navScrolled = scrollY > 40
 
   return (
-    <>
-      {/* Ambient cursor glow */}
-      <div
-        className="fixed pointer-events-none z-50 rounded-full blur-3xl"
+    <div style={{ background: 'var(--bg)', minHeight: '100vh' }}>
+
+      {/* ── NAV ─────────────────────────────────────────────────────────── */}
+      <header
+        className="fixed top-0 left-0 right-0 z-50 transition-all duration-300"
         style={{
-          width: 400,
-          height: 400,
-          background: 'radial-gradient(circle, rgba(0,229,255,0.07) 0%, transparent 70%)',
-          left: mousePos.x - 200,
-          top: mousePos.y - 200,
-          transition: 'left 0.08s linear, top 0.08s linear',
+          borderBottom: navScrolled ? '1px solid var(--border)' : '1px solid transparent',
+          background: navScrolled ? 'rgba(7,9,15,0.85)' : 'transparent',
+          backdropFilter: navScrolled ? 'blur(20px)' : 'none',
         }}
-      />
+      >
+        <div className="max-w-6xl mx-auto px-6 md:px-10 flex items-center justify-between h-16">
+          <a href="#" className="flex items-center gap-2">
+            <div className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ background: 'var(--accent)' }}>
+              <span style={{ color: '#07090f', fontSize: '0.75rem', fontWeight: 800, fontFamily: 'Plus Jakarta Sans' }}>W</span>
+            </div>
+            <span style={{ fontWeight: 700, fontSize: '0.95rem', color: 'var(--text)' }}>Weirding Code</span>
+          </a>
 
-      {/* Scanline */}
-      <div className="scanline" />
-
-      <main className="relative min-h-screen overflow-x-hidden" style={{ background: '#080808' }}>
-
-        {/* ── NAV ─────────────────────────────────────────────────────── */}
-        <nav
-          className="fixed top-0 left-0 right-0 z-40 flex items-center justify-between px-8 py-5 transition-all"
-          style={{
-            backdropFilter: scrollY > 60 ? 'blur(16px)' : 'none',
-            borderBottom: scrollY > 60 ? '1px solid rgba(255,255,255,0.05)' : '1px solid transparent',
-            background: scrollY > 60 ? 'rgba(8,8,8,0.85)' : 'transparent',
-          }}
-        >
-          <div className="font-code text-xs text-white/30 tracking-widest uppercase flex items-center gap-2">
-            <span className="neon text-xs">▶</span> weirding-code.com
-          </div>
-          <div className="hidden md:flex items-center gap-8">
-            {['about', 'projects', 'contact'].map((item) => (
-              <a
-                key={item}
-                href={`#${item}`}
-                className="font-code text-xs text-white/40 hover:text-white transition-colors uppercase tracking-widest"
-              >
-                {item}
-              </a>
+          <nav className="hidden md:flex items-center gap-8">
+            {NAV_LINKS.map(({ label, href }) => (
+              <a key={label} href={href} className="nav-link">{label}</a>
             ))}
-          </div>
-        </nav>
+          </nav>
+
+          <a
+            href="#contact"
+            className="btn-primary hidden md:inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm"
+          >
+            Me contacter
+          </a>
+        </div>
+      </header>
+
+      <main>
 
         {/* ── HERO ─────────────────────────────────────────────────────── */}
-        <section
-          id="hero"
-          ref={heroRef}
-          className="relative min-h-screen flex flex-col justify-center px-8 md:px-16 lg:px-24 pt-24 pb-16 overflow-hidden"
-        >
-          <GridBackground />
+        <section className="relative pt-36 pb-28 px-6 md:px-10 overflow-hidden">
 
-          {/* Ghost big letters */}
-          <div
-            className="absolute right-0 top-1/2 -translate-y-1/2 font-display leading-none select-none pointer-events-none"
-            style={{ fontSize: '22vw', color: 'rgba(255,255,255,0.018)', letterSpacing: '-0.04em' }}
-          >
-            WC
-          </div>
+          {/* Ambient blobs */}
+          <div className="glow-blob w-96 h-96 -top-20 -left-20" style={{ background: 'rgba(129,140,248,0.08)' }} />
+          <div className="glow-blob w-80 h-80 top-20 right-0" style={{ background: 'rgba(167,139,250,0.06)', animationDelay: '3s' }} />
 
-          {/* Floating terminal snippet */}
-          <div className="absolute top-32 right-8 md:right-16 font-code text-white/[0.12] text-xs leading-6 float hidden md:block">
-            <span style={{ color: 'rgba(0,229,255,0.3)' }}>{'// init\n'}</span>
-            {'> booting...\n> ready: true\n> vibe: 100'}
-          </div>
+          <div className="max-w-6xl mx-auto relative z-10">
+            <div className="max-w-3xl">
 
-          {/* Accent lines */}
-          <div className="absolute top-20 left-0 w-px h-32" style={{ background: 'linear-gradient(to bottom, transparent, #00e5ff40, transparent)' }} />
-          <div className="absolute bottom-20 right-0 w-px h-32" style={{ background: 'linear-gradient(to bottom, transparent, #ff006e40, transparent)' }} />
+              {/* Badge */}
+              <div className="animate-fade-up inline-flex items-center gap-2 px-3 py-1.5 rounded-full mb-8" style={{ background: 'var(--accent-dim)', border: '1px solid rgba(129,140,248,0.2)' }}>
+                <div className="w-1.5 h-1.5 rounded-full bg-green-400" style={{ boxShadow: '0 0 6px rgba(74,222,128,0.8)' }} />
+                <span className="font-mono text-xs" style={{ color: 'var(--accent)' }}>Disponible pour de nouveaux projets</span>
+              </div>
 
-          <div className="relative z-10 max-w-7xl">
-            <SectionLabel index="00">INTRO</SectionLabel>
+              {/* Title */}
+              <h1 className="animate-fade-up animate-fade-up-2" style={{ fontSize: 'clamp(2.5rem, 6vw, 4.5rem)', fontWeight: 800, lineHeight: 1.1, letterSpacing: '-0.03em', color: 'var(--text)', marginBottom: '1.5rem' }}>
+                Votre réalisateur de
+                <br />
+                <span className="gradient-text">solutions WEB</span>
+              </h1>
 
-            {/* Main title */}
-            <div className="font-code text-white/30 text-sm mb-2 tracking-widest">flavien desse</div>
-            <h1
-              className="glitch font-display leading-none"
-              data-text="WEIRDING CODE"
-              style={{
-                fontSize: 'clamp(3.5rem, 11vw, 13rem)',
-                letterSpacing: '-0.02em',
-                color: 'white',
-                lineHeight: 0.9,
-              }}
-            >
-              WEIRDING CODE
-            </h1>
-
-            {/* Tagline */}
-            <div className="mt-10 flex flex-col md:flex-row items-start md:items-center gap-10">
-              <p className="text-white/45 text-lg max-w-lg leading-relaxed" style={{ fontFamily: 'Syne, sans-serif' }}>
-                Développeur <span style={{ color: '#ff006e', fontWeight: 700 }}>fullstack</span> —
-                votre réalisateur de solutions{' '}
-                <span style={{ color: '#f5ff00', fontWeight: 700 }}>WEB</span> sur mesure.
+              {/* Tagline */}
+              <p className="animate-fade-up animate-fade-up-3" style={{ fontSize: '1.125rem', color: 'var(--muted)', lineHeight: 1.75, maxWidth: '560px', marginBottom: '2.5rem' }}>
+                Je suis <strong style={{ color: 'var(--text)', fontWeight: 600 }}>Flavien Desse</strong>, développeur fullstack.
+                Je conçois des solutions sur mesure en partant de zéro, adaptées précisément à vos besoins.
               </p>
 
-              <div className="flex flex-wrap items-center gap-4 shrink-0">
-                <a
-                  href="#projects"
-                  className="btn-neon font-code text-sm font-bold uppercase tracking-widest px-8 py-4 flex items-center gap-2"
-                  style={{ background: '#00e5ff', color: '#080808' }}
-                >
-                  Voir le travail <ArrowRight size={16} />
+              {/* CTAs */}
+              <div className="animate-fade-up animate-fade-up-4 flex flex-wrap gap-3">
+                <a href="#projects" className="btn-primary inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-semibold">
+                  Voir mes réalisations <ArrowRight size={16} />
                 </a>
-                <a
-                  href="#contact"
-                  className="font-code text-xs uppercase tracking-widest px-8 py-4 border text-white/50 hover:text-white hover:border-white/40 transition-all"
-                  style={{ borderColor: 'rgba(255,255,255,0.15)' }}
-                >
-                  Contact
+                <a href="#contact" className="btn-ghost inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-semibold">
+                  Me contacter
                 </a>
               </div>
-            </div>
 
-            {/* Tech tags */}
-            <div className="mt-16 flex flex-wrap gap-2">
-              {TECH_TAGS.map((tech) => (
-                <span
-                  key={tech}
-                  className="font-code text-xs text-white/25 border px-3 py-1 uppercase tracking-wider hover:text-[#00e5ff] transition-all"
-                  style={{ borderColor: 'rgba(255,255,255,0.08)' }}
-                  onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'rgba(0,229,255,0.3)' }}
-                  onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)' }}
-                >
-                  {tech}
-                </span>
-              ))}
+              {/* Tech tags */}
+              <div className="flex flex-wrap gap-2 mt-12">
+                {TECH_TAGS.map((t) => (
+                  <span key={t} className="tag">{t}</span>
+                ))}
+              </div>
             </div>
-          </div>
-
-          {/* Scroll cue */}
-          <div className="absolute bottom-10 left-8 flex flex-col items-center gap-2 text-white/20">
-            <span className="font-code text-xs tracking-widest">SCROLL</span>
-            <div className="w-px h-12" style={{ background: 'linear-gradient(to bottom, rgba(0,229,255,0.5), transparent)' }} />
           </div>
         </section>
 
         {/* ── MARQUEE ───────────────────────────────────────────────────── */}
-        <div
-          className="overflow-hidden py-4"
-          style={{ background: '#0a0a0a', borderTop: '1px solid rgba(255,255,255,0.04)', borderBottom: '1px solid rgba(255,255,255,0.04)' }}
-        >
+        <div className="overflow-hidden py-4 divider" style={{ borderBottom: '1px solid var(--border)', borderTop: '1px solid var(--border)', background: 'var(--surface)' }}>
           <div className="marquee-track">
-            {[MARQUEE_TEXT, MARQUEE_TEXT].map((text, idx) => (
-              <span key={idx} className="font-code text-xs tracking-widest" style={{ color: 'rgba(255,255,255,0.18)' }}>
+            {[MARQUEE_TEXT, MARQUEE_TEXT].map((text, i) => (
+              <span key={i} className="font-mono text-xs px-0" style={{ color: 'var(--muted)', letterSpacing: '0.08em' }}>
                 {text}
               </span>
             ))}
@@ -264,164 +199,158 @@ export default function App() {
         </div>
 
         {/* ── ABOUT ─────────────────────────────────────────────────────── */}
-        <section id="about" className="relative py-32 px-8 md:px-16 lg:px-24">
-          <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-20 items-center">
+        <section id="about" className="py-28 px-6 md:px-10">
+          <div className="max-w-6xl mx-auto">
+            <div className="grid md:grid-cols-2 gap-16 items-center">
 
-            {/* Terminal card */}
-            <div className="relative float">
-              <div className="border" style={{ borderColor: 'rgba(255,255,255,0.08)', background: '#0f0f0f' }}>
-                {/* Title bar */}
-                <div className="flex items-center gap-2 px-4 py-3" style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-                  <div className="w-3 h-3 rounded-full" style={{ background: 'rgba(255,0,110,0.6)' }} />
-                  <div className="w-3 h-3 rounded-full" style={{ background: 'rgba(245,255,0,0.6)' }} />
-                  <div className="w-3 h-3 rounded-full" style={{ background: 'rgba(0,229,255,0.6)' }} />
-                  <span className="font-code text-xs text-white/20 ml-2">about.json</span>
+              {/* Left */}
+              <div>
+                <div className="section-label mb-5">À propos</div>
+                <h2 style={{ fontSize: 'clamp(1.75rem, 3.5vw, 2.75rem)', fontWeight: 800, letterSpacing: '-0.02em', lineHeight: 1.2, color: 'var(--text)', marginBottom: '1.5rem' }}>
+                  Du code avec intention,<br />des projets qui durent
+                </h2>
+                <div style={{ color: 'var(--muted)', lineHeight: 1.8, fontSize: '1rem' }} className="space-y-4">
+                  <p>
+                    Je suis passionné par l'art de transformer des idées en projets uniques.
+                    Chaque projet est l'occasion d'explorer de nouvelles voies et de créer
+                    des expériences qui vous ressemblent.
+                  </p>
+                  <p>
+                    Avec une écoute attentive et une volonté d'innover, je vous accompagne
+                    dans la construction d'un univers sur mesure à votre image —
+                    de la conception initiale à la mise en production.
+                  </p>
                 </div>
-                {/* Code */}
-                <div className="p-8 font-code text-xs leading-8">
+
+                <a href="#contact" className="inline-flex items-center gap-2 mt-8 text-sm font-semibold" style={{ color: 'var(--accent)' }}>
+                  Travaillons ensemble <ChevronRight size={16} />
+                </a>
+              </div>
+
+              {/* Right — Stats + Code block */}
+              <div className="space-y-4">
+                {/* Stats */}
+                <div className="grid grid-cols-3 gap-4">
                   {[
-                    { key: null,         val: '{',                    type: 'brace' },
-                    { key: 'name',       val: '"Flavien Desse"',      type: 'string' },
-                    { key: 'role',       val: '"Développeur Fullstack"', type: 'string' },
-                    { key: 'passion',    val: '"solutions sur mesure"', type: 'string' },
-                    { key: 'coffee',     val: 'Infinity',             type: 'number' },
-                    { key: 'location',   val: '"France"',             type: 'string' },
-                    { key: 'available',  val: 'true',                 type: 'bool' },
-                    { key: null,         val: '}',                    type: 'brace' },
-                  ].map((line, i) => (
-                    <div key={i} className={line.key ? 'pl-6' : ''} style={{ color: 'rgba(255,255,255,0.35)' }}>
-                      {line.key && (
-                        <>
-                          <span style={{ color: '#f5ff00' }}>{line.key}</span>
-                          <span>: </span>
-                        </>
-                      )}
-                      <span
-                        style={{
-                          color:
-                            line.type === 'string' ? '#ff006e' :
-                            line.type === 'number' || line.type === 'bool' ? '#00e5ff' :
-                            line.type === 'null' ? 'rgba(255,255,255,0.3)' :
-                            'rgba(255,255,255,0.5)',
-                        }}
-                      >
-                        {line.val}
-                      </span>
-                      {i === 7 && <span className="cursor-blink" style={{ color: '#00e5ff' }}>_</span>}
+                    { val: '10+', label: 'Projets livrés' },
+                    { val: '5+', label: 'Années d\'XP' },
+                    { val: '100%', label: 'Sur mesure' },
+                  ].map(({ val, label }) => (
+                    <div key={label} className="card rounded-2xl p-5 text-center">
+                      <div style={{ fontSize: '1.75rem', fontWeight: 800, color: 'var(--text)', letterSpacing: '-0.02em' }}>{val}</div>
+                      <div className="font-mono mt-1" style={{ fontSize: '0.65rem', color: 'var(--muted)', letterSpacing: '0.08em', textTransform: 'uppercase' }}>{label}</div>
                     </div>
                   ))}
                 </div>
-              </div>
-              <div className="absolute -inset-6 blur-3xl -z-10 rounded-full" style={{ background: 'rgba(0,229,255,0.04)' }} />
-            </div>
 
-            {/* Text */}
-            <div>
-              <SectionLabel index="01">ABOUT</SectionLabel>
-              <h2
-                className="font-display leading-none mb-10"
-                style={{ fontSize: 'clamp(3rem, 6vw, 6rem)', letterSpacing: '-0.02em', color: 'white' }}
-              >
-                QUI JE<br />
-                <span style={{ color: '#ff006e' }}>SUIS</span>
-              </h2>
-              <div className="space-y-5 leading-relaxed" style={{ color: 'rgba(255,255,255,0.45)', fontFamily: 'Syne, sans-serif' }}>
-                <p>
-                  Je suis <span style={{ color: 'white', fontWeight: 600 }}>Flavien Desse</span>, passionné par l'art de transformer
-                  des idées en projets uniques. Je conçois des solutions sur mesure en partant de zéro,
-                  m'adaptant précisément à vos besoins.
-                </p>
-                <p>
-                  Mon approche collaborative me permet de comprendre vos ambitions en profondeur et de développer
-                  des stratégies personnalisées qui transforment vos idées en{' '}
-                  <span style={{ color: 'white', fontWeight: 600 }}>réalités concrètes</span>.
-                </p>
-                <p>
-                  De la conception initiale à la réalisation finale, je prends en charge chaque détail
-                  pour garantir des solutions <span style={{ color: 'white', fontWeight: 600 }}>efficaces et esthétiques</span>.
-                </p>
-              </div>
-
-              <div className="mt-12 grid grid-cols-3 gap-6">
-                {STATS.map(({ label, value }) => (
-                  <div key={label} className="pl-5" style={{ borderLeft: '2px solid rgba(0,229,255,0.3)' }}>
-                    <div className="font-display text-4xl" style={{ color: '#00e5ff' }}>{value}</div>
-                    <div className="font-code text-xs text-white/30 uppercase tracking-widest mt-1">{label}</div>
+                {/* Code block */}
+                <div className="card rounded-2xl overflow-hidden">
+                  <div className="flex items-center gap-2 px-4 py-3" style={{ borderBottom: '1px solid var(--border)', background: 'var(--surface-2)' }}>
+                    {['#ff5f57','#ffbd2e','#28c840'].map((c) => (
+                      <div key={c} className="w-3 h-3 rounded-full" style={{ background: c, opacity: 0.8 }} />
+                    ))}
+                    <span className="font-mono text-xs ml-2" style={{ color: 'var(--muted)' }}>flavien.ts</span>
                   </div>
-                ))}
+                  <div className="p-6 font-mono text-xs leading-7" style={{ color: 'var(--muted)' }}>
+                    {[
+                      [null, '{', 'brace'],
+                      ['name', '"Flavien Desse"', 'string'],
+                      ['role', '"Développeur Fullstack"', 'string'],
+                      ['location', '"France"', 'string'],
+                      ['coffee', 'Infinity', 'num'],
+                      ['available', 'true', 'bool'],
+                      [null, '}', 'brace'],
+                    ].map(([key, val, type], i) => (
+                      <div key={i} className={cn(key ? 'pl-5' : '')}>
+                        {key && <span style={{ color: '#60a5fa' }}>{key}</span>}
+                        {key && <span style={{ color: 'var(--muted)' }}>: </span>}
+                        <span style={{
+                          color: type === 'string' ? '#a78bfa'
+                            : type === 'num' || type === 'bool' ? '#34d399'
+                            : 'var(--muted)',
+                        }}>
+                          {val}
+                        </span>
+                        {key && i < 5 && <span style={{ color: 'var(--muted)' }}>,</span>}
+                      </div>
+                    ))}
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </section>
 
         {/* ── PROJECTS ──────────────────────────────────────────────────── */}
-        <section id="projects" className="py-32 px-8 md:px-16 lg:px-24" style={{ background: '#0a0a0a' }}>
-          <div className="max-w-7xl mx-auto">
-            <div className="flex items-end justify-between mb-16">
+        <section id="projects" className="py-28 px-6 md:px-10" style={{ background: 'var(--surface)' }}>
+          <div className="max-w-6xl mx-auto">
+            <div className="flex items-end justify-between mb-14">
               <div>
-                <SectionLabel index="02">PROJECTS</SectionLabel>
-                <h2
-                  className="font-display leading-none"
-                  style={{ fontSize: 'clamp(3rem, 7vw, 7rem)', letterSpacing: '-0.02em', color: 'white' }}
-                >
-                  CE QUE<br />
-                  J'AI <span style={{ color: '#f5ff00' }}>CONSTRUIT</span>
+                <div className="section-label mb-5">Réalisations</div>
+                <h2 style={{ fontSize: 'clamp(1.75rem, 3.5vw, 2.75rem)', fontWeight: 800, letterSpacing: '-0.02em', color: 'var(--text)' }}>
+                  Projets récents
                 </h2>
               </div>
-              <div className="font-code text-xs text-white/15 hidden md:block">[hover to explore]</div>
             </div>
 
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {PROJECTS.map((project) => (
-                <div
-                  key={project.title}
-                  className="card-wc flex flex-col gap-6 p-8 border"
-                  style={{ borderColor: 'rgba(255,255,255,0.08)', background: '#0f0f0f' }}
-                >
+            <div className="grid md:grid-cols-3 gap-5">
+              {PROJECTS.map((p) => (
+                <div key={p.title} className="card rounded-2xl p-6 flex flex-col gap-5">
+                  {/* Header */}
                   <div className="flex items-start justify-between">
-                    <div
-                      className="w-10 h-10 flex items-center justify-center border"
-                      style={{ borderColor: project.color + '50', color: project.color }}
-                    >
-                      {project.icon}
+                    <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: `${p.color}18`, color: p.color }}>
+                      {p.icon}
                     </div>
-                    <span className="font-code text-xs tracking-widest" style={{ color: project.color + '70' }}>
-                      {project.tag}
-                    </span>
+                    <span className="tag">{p.tag}</span>
                   </div>
 
-                  <div>
-                    <h3 className="font-display text-4xl mb-3" style={{ letterSpacing: '-0.01em', color: 'white' }}>
-                      {project.title}
-                    </h3>
-                    <p className="text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.38)', fontFamily: 'Syne, sans-serif' }}>
-                      {project.desc}
-                    </p>
+                  {/* Content */}
+                  <div className="flex-1">
+                    <h3 style={{ fontWeight: 700, fontSize: '1.1rem', color: 'var(--text)', marginBottom: '0.6rem' }}>{p.title}</h3>
+                    <p style={{ fontSize: '0.875rem', color: 'var(--muted)', lineHeight: 1.65 }}>{p.desc}</p>
                   </div>
 
-                  <div className="flex flex-wrap gap-2 mt-auto">
-                    {project.tech.map((t) => (
-                      <span
-                        key={t}
-                        className="font-code text-xs px-2 py-0.5 uppercase border"
-                        style={{ color: 'rgba(255,255,255,0.25)', borderColor: 'rgba(255,255,255,0.08)' }}
-                      >
-                        {t}
-                      </span>
+                  {/* Tech */}
+                  <div className="flex flex-wrap gap-2">
+                    {p.tech.map((t) => (
+                      <span key={t} className="tag">{t}</span>
                     ))}
                   </div>
 
-                  <div className="flex items-center gap-2 w-fit" style={{ color: 'rgba(255,255,255,0.2)' }}>
-                    <ExternalLink size={13} />
-                    <span
-                      className="font-code text-xs uppercase tracking-wider"
-                      style={{ transition: 'color 0.2s' }}
-                      onMouseEnter={(e) => { e.currentTarget.style.color = '#00e5ff' }}
-                      onMouseLeave={(e) => { e.currentTarget.style.color = 'rgba(255,255,255,0.2)' }}
-                    >
-                      Voir le projet
-                    </span>
+                  {/* Link */}
+                  <button className="flex items-center gap-1.5 text-xs font-semibold transition-colors" style={{ color: 'var(--muted)' }}
+                    onMouseEnter={(e) => { e.currentTarget.style.color = 'var(--accent)' }}
+                    onMouseLeave={(e) => { e.currentTarget.style.color = 'var(--muted)' }}
+                  >
+                    <ExternalLink size={13} /> Voir le projet
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ── SERVICES ──────────────────────────────────────────────────── */}
+        <section id="services" className="py-28 px-6 md:px-10">
+          <div className="max-w-6xl mx-auto">
+            <div className="section-label mb-5">Services</div>
+            <div className="flex items-end justify-between mb-14">
+              <h2 style={{ fontSize: 'clamp(1.75rem, 3.5vw, 2.75rem)', fontWeight: 800, letterSpacing: '-0.02em', color: 'var(--text)' }}>
+                Ce que je propose
+              </h2>
+              <p className="hidden md:block max-w-xs text-sm" style={{ color: 'var(--muted)', lineHeight: 1.7 }}>
+                Des solutions adaptées à chaque besoin, de la vitrine au système complet.
+              </p>
+            </div>
+
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+              {SERVICES.map(({ icon, title, desc }) => (
+                <div key={title} className="card rounded-2xl p-6 group">
+                  <div className="w-10 h-10 rounded-xl flex items-center justify-center mb-5 transition-colors" style={{ background: 'var(--accent-dim)', color: 'var(--accent)' }}>
+                    {icon}
                   </div>
+                  <h3 style={{ fontWeight: 700, fontSize: '1rem', color: 'var(--text)', marginBottom: '0.6rem' }}>{title}</h3>
+                  <p style={{ fontSize: '0.875rem', color: 'var(--muted)', lineHeight: 1.65 }}>{desc}</p>
                 </div>
               ))}
             </div>
@@ -429,108 +358,108 @@ export default function App() {
         </section>
 
         {/* ── CONTACT ───────────────────────────────────────────────────── */}
-        <section id="contact" className="relative py-32 px-8 md:px-16 lg:px-24 overflow-hidden">
-          <div
-            className="absolute inset-0 flex items-center justify-center font-display select-none pointer-events-none leading-none"
-            style={{ fontSize: '35vw', color: 'rgba(255,255,255,0.012)', letterSpacing: '-0.04em' }}
-          >
-            HI
-          </div>
+        <section id="contact" className="py-28 px-6 md:px-10" style={{ background: 'var(--surface)' }}>
+          <div className="max-w-6xl mx-auto">
+            <div className="grid md:grid-cols-2 gap-16">
 
-          <div className="max-w-7xl mx-auto relative z-10">
-            <SectionLabel index="03">CONTACT</SectionLabel>
-
-            <h2
-              className="font-display leading-none mb-20"
-              style={{ fontSize: 'clamp(3rem, 9vw, 10rem)', letterSpacing: '-0.02em', color: 'white' }}
-            >
-              ON BOSSE<br />
-              ENSEMBLE<span style={{ color: '#00e5ff' }}>.</span>
-            </h2>
-
-            <div className="grid md:grid-cols-2 gap-16 items-start">
-              {/* Coordonnées */}
-              <div className="space-y-6">
-                <p className="text-lg leading-relaxed" style={{ color: 'rgba(255,255,255,0.45)', fontFamily: 'Syne, sans-serif' }}>
-                  Un projet, une idée ?{' '}
-                  <span style={{ color: 'white' }}>Je suis disponible.</span>{' '}
-                  Écrivez-moi et transformons vos ambitions en succès.
+              {/* Left */}
+              <div>
+                <div className="section-label mb-5">Contact</div>
+                <h2 style={{ fontSize: 'clamp(1.75rem, 3.5vw, 2.75rem)', fontWeight: 800, letterSpacing: '-0.02em', color: 'var(--text)', marginBottom: '1.25rem' }}>
+                  Parlons de votre projet
+                </h2>
+                <p style={{ color: 'var(--muted)', lineHeight: 1.8, maxWidth: '380px', marginBottom: '2.5rem' }}>
+                  Décrivez-moi votre projet et transformons vos ambitions en réalités concrètes. Réponse sous 24h.
                 </p>
 
-                <div className="flex flex-col gap-3">
-                  <a
-                    href="mailto:weirding.code@gmail.com"
-                    className="link-row flex items-center justify-between p-5 border transition-all"
-                    style={{ borderColor: 'rgba(255,255,255,0.08)' }}
+                <div className="space-y-3">
+                  <a href="mailto:weirding.code@gmail.com" className="flex items-center gap-4 p-4 rounded-xl transition-colors group" style={{ border: '1px solid var(--border)' }}
+                    onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'var(--border-hover)' }}
+                    onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'var(--border)' }}
                   >
-                    <div className="flex items-center gap-4" style={{ color: 'rgba(255,255,255,0.6)' }}>
-                      <Mail size={18} style={{ color: '#00e5ff' }} />
-                      <span className="font-code text-sm">weirding.code@gmail.com</span>
+                    <div className="w-9 h-9 rounded-lg flex items-center justify-center" style={{ background: 'var(--accent-dim)', color: 'var(--accent)' }}>
+                      <Mail size={16} />
                     </div>
-                    <ExternalLink size={14} style={{ color: 'rgba(255,255,255,0.15)' }} />
+                    <div>
+                      <div className="font-mono text-xs mb-0.5" style={{ color: 'var(--muted)' }}>Email</div>
+                      <div className="text-sm font-medium" style={{ color: 'var(--text)' }}>weirding.code@gmail.com</div>
+                    </div>
+                    <ExternalLink size={14} className="ml-auto" style={{ color: 'var(--muted)' }} />
                   </a>
-                  <a
-                    href="tel:+33649198086"
-                    className="link-row flex items-center justify-between p-5 border transition-all"
-                    style={{ borderColor: 'rgba(255,255,255,0.08)' }}
+
+                  <a href="tel:+33649198086" className="flex items-center gap-4 p-4 rounded-xl transition-colors" style={{ border: '1px solid var(--border)' }}
+                    onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'var(--border-hover)' }}
+                    onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'var(--border)' }}
                   >
-                    <div className="flex items-center gap-4" style={{ color: 'rgba(255,255,255,0.6)' }}>
-                      <GitFork size={18} style={{ color: '#ff006e' }} />
-                      <span className="font-code text-sm">06 49 19 80 86</span>
+                    <div className="w-9 h-9 rounded-lg flex items-center justify-center" style={{ background: 'var(--accent-dim)', color: 'var(--accent)' }}>
+                      <Phone size={16} />
                     </div>
-                    <ExternalLink size={14} style={{ color: 'rgba(255,255,255,0.15)' }} />
+                    <div>
+                      <div className="font-mono text-xs mb-0.5" style={{ color: 'var(--muted)' }}>Téléphone</div>
+                      <div className="text-sm font-medium" style={{ color: 'var(--text)' }}>06 49 19 80 86</div>
+                    </div>
+                    <ExternalLink size={14} className="ml-auto" style={{ color: 'var(--muted)' }} />
                   </a>
                 </div>
               </div>
 
-              {/* Formulaire de contact */}
-              <form className="flex flex-col gap-4" onSubmit={(e) => e.preventDefault()}>
-                {[
-                  { label: 'Entreprise', type: 'text', placeholder: 'Votre entreprise' },
-                  { label: 'Email', type: 'email', placeholder: 'votre@email.com' },
-                ].map(({ label, type, placeholder }) => (
-                  <div key={label}>
-                    <label className="font-code text-xs text-white/30 uppercase tracking-widest block mb-2">{label}</label>
-                    <input
-                      type={type}
-                      placeholder={placeholder}
-                      className="w-full px-4 py-3 font-code text-sm text-white placeholder-white/20 border outline-none focus:border-[#00e5ff] transition-colors"
-                      style={{ background: '#0f0f0f', borderColor: 'rgba(255,255,255,0.08)' }}
-                    />
-                  </div>
-                ))}
+              {/* Right — Form */}
+              <form className="space-y-4" onSubmit={(e) => e.preventDefault()}>
                 <div>
-                  <label className="font-code text-xs text-white/30 uppercase tracking-widest block mb-2">Message</label>
+                  <label className="font-mono text-xs block mb-2" style={{ color: 'var(--muted)', letterSpacing: '0.06em' }}>ENTREPRISE</label>
+                  <input
+                    type="text"
+                    placeholder="Votre entreprise ou nom"
+                    value={form.company}
+                    onChange={(e) => setForm({ ...form, company: e.target.value })}
+                    className="input-field px-4 py-3 rounded-xl text-sm"
+                  />
+                </div>
+                <div>
+                  <label className="font-mono text-xs block mb-2" style={{ color: 'var(--muted)', letterSpacing: '0.06em' }}>EMAIL</label>
+                  <input
+                    type="email"
+                    placeholder="votre@email.com"
+                    value={form.email}
+                    onChange={(e) => setForm({ ...form, email: e.target.value })}
+                    className="input-field px-4 py-3 rounded-xl text-sm"
+                  />
+                </div>
+                <div>
+                  <label className="font-mono text-xs block mb-2" style={{ color: 'var(--muted)', letterSpacing: '0.06em' }}>MESSAGE</label>
                   <textarea
-                    rows={4}
+                    rows={5}
                     placeholder="Décrivez votre projet..."
-                    className="w-full px-4 py-3 font-code text-sm text-white placeholder-white/20 border outline-none focus:border-[#00e5ff] transition-colors resize-none"
-                    style={{ background: '#0f0f0f', borderColor: 'rgba(255,255,255,0.08)' }}
+                    value={form.message}
+                    onChange={(e) => setForm({ ...form, message: e.target.value })}
+                    className="input-field px-4 py-3 rounded-xl text-sm resize-none"
                   />
                 </div>
                 <button
                   type="submit"
-                  className="btn-neon font-code text-sm font-bold uppercase tracking-widest px-8 py-4 flex items-center justify-center gap-2"
-                  style={{ background: '#00e5ff', color: '#080808' }}
+                  className="btn-primary w-full flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl text-sm font-semibold"
                 >
-                  Envoyer <ArrowRight size={16} />
+                  Envoyer le message <ArrowRight size={16} />
                 </button>
               </form>
             </div>
           </div>
         </section>
-
-        {/* ── FOOTER ────────────────────────────────────────────────────── */}
-        <footer
-          className="flex items-center justify-between px-8 md:px-16 lg:px-24 py-8"
-          style={{ borderTop: '1px solid rgba(255,255,255,0.05)' }}
-        >
-          <span className="font-code text-xs text-white/20">© 2026 weirding-code.com</span>
-          <span className="font-code text-xs text-white/20">
-            Built with <span style={{ color: '#ff006e' }}>♥</span> + Spring Boot + React
-          </span>
-        </footer>
       </main>
-    </>
+
+      {/* ── FOOTER ────────────────────────────────────────────────────────── */}
+      <footer className="px-6 md:px-10 py-8" style={{ borderTop: '1px solid var(--border)' }}>
+        <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+          <div className="flex items-center gap-2">
+            <div className="w-6 h-6 rounded-md flex items-center justify-center" style={{ background: 'var(--accent)' }}>
+              <span style={{ color: '#07090f', fontSize: '0.65rem', fontWeight: 800 }}>W</span>
+            </div>
+            <span className="text-sm font-semibold" style={{ color: 'var(--text)' }}>Weirding Code</span>
+          </div>
+          <span className="font-mono text-xs" style={{ color: 'var(--muted)' }}>© 2026 Flavien Desse — Tous droits réservés</span>
+          <span className="font-mono text-xs" style={{ color: 'var(--muted)' }}>Spring Boot + React</span>
+        </div>
+      </footer>
+    </div>
   )
 }
