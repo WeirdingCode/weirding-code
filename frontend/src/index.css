@@ -5,16 +5,16 @@
 
 /* ── Variables ── */
 :root {
-  --bg:          #0b132b;
-  --surface:     #111827;
-  --surface-2:   #1a1a2b;
-  --border:      rgba(255,255,255,0.07);
-  --border-h:    rgba(255,255,255,0.15);
-  --text:        #eaeaea;
-  --muted:       #a3a7ac;
-  --accent:      #0054ff;
-  --accent-dim:  rgba(0,84,255,0.12);
-  --accent-glow: rgba(0,84,255,0.3);
+  --bg:          #1a0509;
+  --surface:     #2a0c10;
+  --surface-2:   #3a1018;
+  --border:      rgba(164,141,121,0.12);
+  --border-h:    rgba(164,141,121,0.28);
+  --text:        #f3f1f2;
+  --muted:       #a48d79;
+  --accent:      #a48d79;
+  --accent-dim:  rgba(164,141,121,0.12);
+  --accent-glow: rgba(164,141,121,0.3);
   --radius-sm:   8px;
   --radius:      14px;
   --radius-lg:   20px;
@@ -196,7 +196,7 @@ a { text-decoration: none; color: inherit; }
 
 /* ── Gradient text ── */
 .gradient-text {
-  background: linear-gradient(135deg, #eaeaea 0%, #0054ff 60%, #262f71 100%);
+  background: linear-gradient(135deg, #f3f1f2 0%, #a48d79 60%, #4c061d 100%);
   background-size: 200% 200%;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
