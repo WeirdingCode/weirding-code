@@ -174,7 +174,7 @@ export default function App() {
                 ].map(([key, val, type], i) => (
                   <div key={i} style={{ paddingLeft: key ? 20 : 0 }}>
                     {key && <><span className="code-key">{key}</span><span className="code-muted">: </span></>}
-                    <span className={type === 'str' ? 'code-str' : type === 'num' ? 'code-num' : 'code-muted'}>{val}</span>
+                    <span className={type === 'str' ? 'code-str' : type === 'num' ? 'code-num' : 'code-muted'} style={type === 'str' ? { color: '#60a5fa' } : type === 'num' ? { color: '#34d399' } : {}}>{val}</span>
                     {key && i < 5 && <span className="code-muted">,</span>}
                   </div>
                 ))}
