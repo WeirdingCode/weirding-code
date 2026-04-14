@@ -1,13 +1,11 @@
 import { useState, useEffect, useRef } from 'react'
 import { cn } from '@/lib/utils'
 import {
-  Github,
-  Twitter,
+  GitFork,
   Mail,
   ExternalLink,
   Terminal,
   Code2,
-  Zap,
   ArrowRight,
   Globe,
 } from 'lucide-react'
@@ -32,17 +30,17 @@ interface Stat {
 
 const PROJECTS: Project[] = [
   {
-    tag: 'FULL STACK',
-    title: 'Municora',
-    desc: 'Application de gestion municipale. Architecture REST, auth JWT, dashboard admin complet.',
-    tech: ['Java', 'Spring Boot', 'React', 'PostgreSQL'],
+    tag: 'APPLICATION WEB',
+    title: 'SEMASC',
+    desc: 'Création de ressources pédagogiques pour renforcer les capacités des clubs sportifs amateurs en lien avec les initiatives européennes.',
+    tech: ['React', 'Spring Boot', 'PostgreSQL', 'Docker'],
     color: '#00e5ff',
     icon: <Globe size={20} />,
   },
   {
-    tag: 'WEB APP',
-    title: 'Les Ptits Pieds',
-    desc: 'Plateforme dédiée à la santé infantile. UI soignée, design accessible, backend robuste.',
+    tag: 'E-COMMERCE',
+    title: 'Emmael Céramique',
+    desc: 'Site e-commerce dédié à la céramique artisanale. Design élégant, expérience d\'achat fluide, gestion de catalogue.',
     tech: ['React', 'TypeScript', 'Tailwind', 'Spring Boot'],
     color: '#ff006e',
     icon: <Code2 size={20} />,
@@ -50,8 +48,8 @@ const PROJECTS: Project[] = [
   {
     tag: 'SIDE PROJECT',
     title: 'Weirding Code',
-    desc: 'Ce site. Fait avec amour, Spring Boot, React, shadcn et du café. Le craft dans sa forme la plus pure.',
-    tech: ['React', 'shadcn', 'Java 25', 'Maven'],
+    desc: 'Ce site. Fait avec passion, Spring Boot, React, shadcn et beaucoup de café. Le craft dans sa forme la plus pure.',
+    tech: ['React', 'shadcn', 'Java 21', 'Maven'],
     color: '#f5ff00',
     icon: <Terminal size={20} />,
   },
@@ -60,18 +58,13 @@ const PROJECTS: Project[] = [
 const STATS: Stat[] = [
   { label: 'Projets', value: '10+' },
   { label: 'Cafés', value: '∞' },
-  { label: 'Lignes de code', value: '100k+' },
+  { label: 'Années d\'XP', value: '5+' },
 ]
 
-const TECH_TAGS = ['Spring Boot', 'React', 'TypeScript', 'PostgreSQL', 'Docker', 'Java 25', 'Tailwind', 'shadcn']
+const TECH_TAGS = ['Spring Boot', 'React', 'TypeScript', 'PostgreSQL', 'Docker', 'Java', 'Tailwind', 'WordPress']
 
-const MARQUEE_TEXT = 'SPRING BOOT · REACT · TYPESCRIPT · POSTGRESQL · SHADCN · JAVA 25 · DOCKER · REST API · '
+const MARQUEE_TEXT = 'SPRING BOOT · REACT · TYPESCRIPT · POSTGRESQL · SHADCN · JAVA · DOCKER · WORDPRESS · SEO · '
 
-const SOCIALS = [
-  { label: 'GitHub', href: '#', icon: <Github size={18} /> },
-  { label: 'Twitter / X', href: '#', icon: <Twitter size={18} /> },
-  { label: 'Email', href: 'mailto:weirding.code@gmail.com', icon: <Mail size={18} /> },
-]
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -193,6 +186,7 @@ export default function App() {
             <SectionLabel index="00">INTRO</SectionLabel>
 
             {/* Main title */}
+            <div className="font-code text-white/30 text-sm mb-2 tracking-widest">flavien desse</div>
             <h1
               className="glitch font-display leading-none"
               data-text="WEIRDING CODE"
@@ -209,10 +203,9 @@ export default function App() {
             {/* Tagline */}
             <div className="mt-10 flex flex-col md:flex-row items-start md:items-center gap-10">
               <p className="text-white/45 text-lg max-w-lg leading-relaxed" style={{ fontFamily: 'Syne, sans-serif' }}>
-                Je code des trucs qui{' '}
-                <span style={{ color: '#ff006e', fontWeight: 700 }}>claquent</span>.
-                Apps web, systèmes, interfaces — avec de l'intention et du{' '}
-                <span style={{ color: '#f5ff00', fontWeight: 700 }}>craft</span> dans chaque ligne.
+                Développeur <span style={{ color: '#ff006e', fontWeight: 700 }}>fullstack</span> —
+                votre réalisateur de solutions{' '}
+                <span style={{ color: '#f5ff00', fontWeight: 700 }}>WEB</span> sur mesure.
               </p>
 
               <div className="flex flex-wrap items-center gap-4 shrink-0">
@@ -287,14 +280,14 @@ export default function App() {
                 {/* Code */}
                 <div className="p-8 font-code text-xs leading-8">
                   {[
-                    { key: null,         val: '{',          type: 'brace' },
-                    { key: 'name',       val: '"Desse"',    type: 'string' },
-                    { key: 'role',       val: '"Developer"',type: 'string' },
-                    { key: 'passion',    val: '"le craft"', type: 'string' },
-                    { key: 'coffee',     val: 'Infinity',   type: 'number' },
-                    { key: 'sleep',      val: 'null',       type: 'null' },
-                    { key: 'available',  val: 'true',       type: 'bool' },
-                    { key: null,         val: '}',          type: 'brace' },
+                    { key: null,         val: '{',                    type: 'brace' },
+                    { key: 'name',       val: '"Flavien Desse"',      type: 'string' },
+                    { key: 'role',       val: '"Développeur Fullstack"', type: 'string' },
+                    { key: 'passion',    val: '"solutions sur mesure"', type: 'string' },
+                    { key: 'coffee',     val: 'Infinity',             type: 'number' },
+                    { key: 'location',   val: '"France"',             type: 'string' },
+                    { key: 'available',  val: 'true',                 type: 'bool' },
+                    { key: null,         val: '}',                    type: 'brace' },
                   ].map((line, i) => (
                     <div key={i} className={line.key ? 'pl-6' : ''} style={{ color: 'rgba(255,255,255,0.35)' }}>
                       {line.key && (
@@ -334,16 +327,19 @@ export default function App() {
               </h2>
               <div className="space-y-5 leading-relaxed" style={{ color: 'rgba(255,255,255,0.45)', fontFamily: 'Syne, sans-serif' }}>
                 <p>
-                  Développeur passionné par le craft, l'architecture propre et les interfaces qui claquent.
-                  Je construis avec <span style={{ color: 'white', fontWeight: 600 }}>Spring Boot</span> côté back,{' '}
-                  <span style={{ color: 'white', fontWeight: 600 }}>React + shadcn</span> côté front.
+                  Je suis <span style={{ color: 'white', fontWeight: 600 }}>Flavien Desse</span>, passionné par l'art de transformer
+                  des idées en projets uniques. Je conçois des solutions sur mesure en partant de zéro,
+                  m'adaptant précisément à vos besoins.
                 </p>
                 <p>
-                  J'aime les projets qui ont de la{' '}
-                  <span style={{ color: 'white', fontWeight: 600 }}>gueule</span> — du code bien structuré,
-                  des UX pensées, des systèmes qui tiennent la route.
+                  Mon approche collaborative me permet de comprendre vos ambitions en profondeur et de développer
+                  des stratégies personnalisées qui transforment vos idées en{' '}
+                  <span style={{ color: 'white', fontWeight: 600 }}>réalités concrètes</span>.
                 </p>
-                <p>Basé en France. Disponible pour des projets qui valent le coup.</p>
+                <p>
+                  De la conception initiale à la réalisation finale, je prends en charge chaque détail
+                  pour garantir des solutions <span style={{ color: 'white', fontWeight: 600 }}>efficaces et esthétiques</span>.
+                </p>
               </div>
 
               <div className="mt-12 grid grid-cols-3 gap-6">
@@ -452,44 +448,74 @@ export default function App() {
               ENSEMBLE<span style={{ color: '#00e5ff' }}>.</span>
             </h2>
 
-            <div className="grid md:grid-cols-2 gap-16 items-end">
-              <div className="space-y-8">
-                <p className="text-lg leading-relaxed" style={{ color: 'rgba(255,255,255,0.45)', fontFamily: 'Syne, sans-serif', maxWidth: '28rem' }}>
-                  Un projet, une idée, une collab ?{' '}
-                  <span style={{ color: 'white' }}>Je suis dispo.</span>{' '}
-                  Écris-moi et on voit ce qu'on peut construire ensemble.
+            <div className="grid md:grid-cols-2 gap-16 items-start">
+              {/* Coordonnées */}
+              <div className="space-y-6">
+                <p className="text-lg leading-relaxed" style={{ color: 'rgba(255,255,255,0.45)', fontFamily: 'Syne, sans-serif' }}>
+                  Un projet, une idée ?{' '}
+                  <span style={{ color: 'white' }}>Je suis disponible.</span>{' '}
+                  Écrivez-moi et transformons vos ambitions en succès.
                 </p>
-                <a
-                  href="mailto:weirding.code@gmail.com"
-                  className="btn-neon inline-flex items-center gap-3 font-code text-sm font-bold uppercase tracking-widest px-10 py-5"
-                  style={{ background: '#00e5ff', color: '#080808' }}
-                >
-                  <Mail size={16} />
-                  weirding.code@gmail.com
-                </a>
-              </div>
 
-              <div className="flex flex-col gap-3">
-                {SOCIALS.map(({ label, href, icon }) => (
+                <div className="flex flex-col gap-3">
                   <a
-                    key={label}
-                    href={href}
+                    href="mailto:weirding.code@gmail.com"
                     className="link-row flex items-center justify-between p-5 border transition-all"
                     style={{ borderColor: 'rgba(255,255,255,0.08)' }}
                   >
-                    <div
-                      className="flex items-center gap-4 transition-colors"
-                      style={{ color: 'rgba(255,255,255,0.38)' }}
-                      onMouseEnter={(e) => { e.currentTarget.style.color = 'white' }}
-                      onMouseLeave={(e) => { e.currentTarget.style.color = 'rgba(255,255,255,0.38)' }}
-                    >
-                      {icon}
-                      <span className="font-code text-sm uppercase tracking-widest">{label}</span>
+                    <div className="flex items-center gap-4" style={{ color: 'rgba(255,255,255,0.6)' }}>
+                      <Mail size={18} style={{ color: '#00e5ff' }} />
+                      <span className="font-code text-sm">weirding.code@gmail.com</span>
                     </div>
                     <ExternalLink size={14} style={{ color: 'rgba(255,255,255,0.15)' }} />
                   </a>
-                ))}
+                  <a
+                    href="tel:+33649198086"
+                    className="link-row flex items-center justify-between p-5 border transition-all"
+                    style={{ borderColor: 'rgba(255,255,255,0.08)' }}
+                  >
+                    <div className="flex items-center gap-4" style={{ color: 'rgba(255,255,255,0.6)' }}>
+                      <GitFork size={18} style={{ color: '#ff006e' }} />
+                      <span className="font-code text-sm">06 49 19 80 86</span>
+                    </div>
+                    <ExternalLink size={14} style={{ color: 'rgba(255,255,255,0.15)' }} />
+                  </a>
+                </div>
               </div>
+
+              {/* Formulaire de contact */}
+              <form className="flex flex-col gap-4" onSubmit={(e) => e.preventDefault()}>
+                {[
+                  { label: 'Entreprise', type: 'text', placeholder: 'Votre entreprise' },
+                  { label: 'Email', type: 'email', placeholder: 'votre@email.com' },
+                ].map(({ label, type, placeholder }) => (
+                  <div key={label}>
+                    <label className="font-code text-xs text-white/30 uppercase tracking-widest block mb-2">{label}</label>
+                    <input
+                      type={type}
+                      placeholder={placeholder}
+                      className="w-full px-4 py-3 font-code text-sm text-white placeholder-white/20 border outline-none focus:border-[#00e5ff] transition-colors"
+                      style={{ background: '#0f0f0f', borderColor: 'rgba(255,255,255,0.08)' }}
+                    />
+                  </div>
+                ))}
+                <div>
+                  <label className="font-code text-xs text-white/30 uppercase tracking-widest block mb-2">Message</label>
+                  <textarea
+                    rows={4}
+                    placeholder="Décrivez votre projet..."
+                    className="w-full px-4 py-3 font-code text-sm text-white placeholder-white/20 border outline-none focus:border-[#00e5ff] transition-colors resize-none"
+                    style={{ background: '#0f0f0f', borderColor: 'rgba(255,255,255,0.08)' }}
+                  />
+                </div>
+                <button
+                  type="submit"
+                  className="btn-neon font-code text-sm font-bold uppercase tracking-widest px-8 py-4 flex items-center justify-center gap-2"
+                  style={{ background: '#00e5ff', color: '#080808' }}
+                >
+                  Envoyer <ArrowRight size={16} />
+                </button>
+              </form>
             </div>
           </div>
         </section>
